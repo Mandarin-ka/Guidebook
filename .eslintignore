@@ -1,2 +1,4 @@
 test/fixtures
 node_modules
+
+*.config.*
