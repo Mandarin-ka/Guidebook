@@ -1,0 +1,30 @@
+.burger {
+  width: 35px;
+  height: 25px;
+  position: fixed;
+  background-color: transparent;
+  box-sizing: border-box;
+  left: 15px;
+  top: 15px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.line,
+.line::after,
+.line::before {
+  content: '';
+  background-color: black;
+  width: 30px;
+  height: 3px;
+  border-radius: 10%;
+  position: absolute;
+}
+
+.line::before {
+  top: 8px;
+}
+
+.line::after {
+  top: 16px;
+}

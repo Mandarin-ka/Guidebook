@@ -1,38 +1,69 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, Marker, TileLayer } from 'react-leaflet';
-import L from 'leaflet';
+
+import {
+  Map,
+  Placemark,
+  RouteButton,
+  RoutePanel,
+  YMaps,
+} from '@pbe/react-yandex-maps';
+import user from 'assets/imgs/user.png';
 
 import './MapApp.css';
 
 function MapApp() {
-  L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.5.0/dist/images/';
-  const [position, setPosition] = useState<{ lat: number; lng: number }>();
+  const [position, setPosition] = useState<[number, number] | null>(null);
 
   useEffect(() => {
-    if (navigator.geolocation)
+    if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          setPosition([pos.coords.latitude, pos.coords.longitude]);
         },
         () => {
-          console.log('Невозможно определить ваше местоположение');
+          console.log('Возникла ошибка, попробуйте позже');
         },
-        { maximumAge: 100, timeout: 1000, enableHighAccuracy: true }
+        { enableHighAccuracy: true }
       );
+    } else {
+      console.log('Невозможно определить геолокацию');
+    }
   }, []);
 
-  if (position?.lat)
+  if (position)
     return (
-      <MapContainer center={position} zoom={3}>
-        <TileLayer
-          attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-        />
-        <Marker position={position} />
-      </MapContainer>
+      <YMaps
+        query={{
+          lang: 'en_RU',
+          apikey: process.env.REACT_APP_Y_API_KEY,
+        }}
+      >
+        <Map
+          width={'100vw'}
+          height={'100vh'}
+          defaultState={{ center: position, zoom: 16 }}
+        >
+          <Placemark
+            geometry={position}
+            options={{
+              iconLayout: 'default#image',
+              iconImageHref: user,
+              iconImageSize: [50, 50],
+            }}
+          />
+          <RoutePanel
+            state={{
+              fromEnabled: false,
+              from: 'moscow',
+              to: 'saint petersburg',
+              type: 'auto',
+            }}
+          />
+        </Map>
+      </YMaps>
     );
 
-  return <div className=''>Подождите минутку</div>;
+  return <div>Невозможно определить вашу геолокацию</div>;
 }
 
 export default MapApp;

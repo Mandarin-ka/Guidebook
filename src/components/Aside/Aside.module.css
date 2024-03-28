@@ -1,0 +1,15 @@
+.aside {
+  position: fixed;
+  left: 0px;
+  top: -100vh;
+  height: 100vh;
+  background-color: white;
+  padding: 40px;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.aside.active {
+  top: 0;
+  transform: 0.3s;
+}
